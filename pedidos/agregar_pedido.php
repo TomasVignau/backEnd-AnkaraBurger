@@ -26,26 +26,15 @@ if (isset($_GET['idMesa']) && isset($_GET['productos'])) {
             $idPedido = $conexion->insert_id;
         }
 
-        // Insertar o actualizar productos
+        // Insertar o actualizar productos en detalle_pedido
         foreach ($productos as $p) {
+            $idProd = intval($p['id_Producto']);  // Asumimos que siempre viene el id
             $cantidad = intval($p['cantidadSeleccionada']);
+            $precioPorProducto = floatval($p['precio']); // Para insertar en detalle_pedido
+
             if ($cantidad <= 0) continue;
 
-            if (isset($p['id_Producto']) && !empty($p['id_Producto'])) {
-                // Producto existente
-                $idProd = intval($p['id_Producto']);
-            } else {
-                // Producto nuevo -> insertarlo en producto primero
-                $nombre = $conexion->real_escape_string($p['nombreProducto']);
-                $precio = floatval($p['precio']);
-                $imagen = $conexion->real_escape_string($p['urlImagen']);
-                $descripcion = $conexion->real_escape_string($p['descripcionProducto']);
-                $conexion->query("INSERT INTO producto (Nombre, Descripcion, Imagen, Precio) 
-                                VALUES ('$nombre', '$descripcion', '$imagen', $precio)");
-                $idProd = $conexion->insert_id;
-            }
-
-            // Insertar o actualizar en detalle_pedido
+            // Verificar si ya existe en detalle_pedido
             $resCheck = $conexion->query("SELECT CantPorProducto FROM detalle_pedido 
                                         WHERE id_Pedido = $idPedido AND id_Producto = $idProd");
             if ($filaDetalle = $resCheck->fetch_assoc()) {
@@ -53,11 +42,10 @@ if (isset($_GET['idMesa']) && isset($_GET['productos'])) {
                 $conexion->query("UPDATE detalle_pedido SET CantPorProducto = $nuevaCantidad 
                                 WHERE id_Pedido = $idPedido AND id_Producto = $idProd");
             } else {
-                $conexion->query("INSERT INTO detalle_pedido (id_Pedido, id_Producto, CantPorProducto) 
-                                VALUES ($idPedido, $idProd, $cantidad)");
+                $conexion->query("INSERT INTO detalle_pedido (id_Pedido, id_Producto, CantPorProducto, PrecioPorProducto) 
+                                VALUES ($idPedido, $idProd, $cantidad, $precioPorProducto)");
             }
         }
-
 
         // Cambiar estado de la mesa
         $conexion->query("UPDATE mesa SET EstadoPedido = 1 WHERE id_Mesa = $idMesa");

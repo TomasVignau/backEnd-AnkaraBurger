@@ -21,8 +21,8 @@ if (isset($_GET['idMesa'])) {
 
         // Traer los ingredientes de cada producto
         $sqlIng = "SELECT i.NombreIngrediente, iep.Cantidad 
-                   FROM IngredientesEnProducto iep
-                   JOIN Ingrediente i ON iep.id_Ingrediente = i.id_Ingrediente
+                   FROM ingredientesenproducto iep
+                   JOIN ingrediente i ON iep.id_Ingrediente = i.id_Ingrediente
                    WHERE iep.id_Producto = $idProducto";
 
         $resIng = $conexion->query($sqlIng);
