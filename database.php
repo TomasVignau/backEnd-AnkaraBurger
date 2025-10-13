@@ -1,5 +1,10 @@
 <?php
+// Configuración de la cabecera para JSON y CORS
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *'); // permite cualquier origen
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
 
 //CONECTAR DE MANERA LOCAL
 
