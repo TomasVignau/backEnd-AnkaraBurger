@@ -9,7 +9,8 @@ if (
     !isset($data['descripcion']) ||
     !isset($data['imagen']) ||
     !isset($data['precio']) ||
-    !isset($data['ingredientes'])
+    !isset($data['ingredientes']) ||
+    !isset($data['tipo'])
 ) {
     echo json_encode(["success" => false, "error" => "Faltan parámetros"]);
     exit;
@@ -24,15 +25,16 @@ $descripcion = $data['descripcion'];
 $imagen = $data['imagen'];
 $precio = floatval($data['precio']);
 $ingredientes = $data['ingredientes']; // array de {id, cantidad}
+$tipo = $data['tipo'];
 
 // Comenzamos la transacción
 $conexion->begin_transaction();
 
 try {
     // Actualizar datos del producto
-    $sqlProducto = "UPDATE producto SET Nombre = ?, Descripcion = ?, Imagen = ?, Precio = ? WHERE id_Producto = ?";
+    $sqlProducto = "UPDATE producto SET Nombre = ?, Descripcion = ?, Tipo = ?, Imagen = ?, Precio = ? WHERE id_Producto = ?";
     $stmtProducto = $conexion->prepare($sqlProducto);
-    $stmtProducto->bind_param("sssdi", $nombre, $descripcion, $imagen, $precio, $idProducto);
+    $stmtProducto->bind_param("ssssdi", $nombre, $descripcion, $tipo, $imagen, $precio, $idProducto);
     $stmtProducto->execute();
     $stmtProducto->close();
 
@@ -47,7 +49,7 @@ try {
     if (!empty($ingredientes)) {
         $sqlInsertIng = "INSERT INTO ingredientesenproducto (id_Producto, id_Ingrediente, Cantidad) VALUES (?, ?, ?)";
         $stmtInsert = $conexion->prepare($sqlInsertIng);
-
+ 
         foreach ($ingredientes as $ing) {
             $idIngrediente = intval($ing['id']);
             $cantidad = $ing['cantidad'];

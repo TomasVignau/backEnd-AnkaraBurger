@@ -2,7 +2,7 @@
 include '../database.php';
 
 $conexion = conectarBD();
-$sql = "SELECT id_Producto, Nombre, Descripcion, Imagen, Precio 
+$sql = "SELECT id_Producto, Nombre, Descripcion, Tipo, Imagen, Precio 
         FROM producto WHERE Disponible = 1";
 $resultado = $conexion->query($sql);
 
@@ -31,7 +31,8 @@ while ($producto = $resultado->fetch_assoc()) {
         "imagen" => $producto["Imagen"],
         "descripcion" => $producto["Descripcion"],
         "precio_unitario" => (float)$producto["Precio"],
-        "ingredientes" => $ingredientes
+        "ingredientes" => $ingredientes,
+        "tipo" => $producto["Tipo"]
     ];
 
 }

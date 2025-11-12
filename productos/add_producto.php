@@ -7,18 +7,20 @@ if (
     isset($data['nombre_Producto']) &&
     isset($data['descripcion']) &&
     isset($data['imagen']) &&
-    isset($data['precio'])
+    isset($data['precio']) &&
+    isset($data['tipo']
 ) {
     $nombre = $data['nombre_Producto'];
     $descripcion = $data['descripcion'];
     $disponible = 1;
     $imagen = $data['imagen'];
     $precio = floatval($data['precio']);
+    $tipo = $data['tipo'];
 
     $conexion = conectarBD();
 
-    $sql = "INSERT INTO producto (Nombre, Descripcion, Disponible, Imagen, Precio)
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO producto (Nombre, Descripcion, Tipo, Disponible, Imagen, Precio)
+            VALUES (?, ?, ?, ?, ?, ?)";
 
     $stmt = $conexion->prepare($sql);
     if (!$stmt) {
@@ -26,7 +28,7 @@ if (
         exit;
     }
 
-    $stmt->bind_param("ssisd", $nombre, $descripcion, $disponible, $imagen, $precio);
+    $stmt->bind_param("ssisd", $nombre, $descripcion, $tipo, $disponible, $imagen, $precio);
 
     if ($stmt->execute()) {
         // Obtengo el ID del producto recién insertado

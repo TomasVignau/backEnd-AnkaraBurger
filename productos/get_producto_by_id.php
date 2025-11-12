@@ -10,7 +10,7 @@ $idProducto = intval($_GET['id']);
 $conexion = conectarBD();
 
 // Traer producto
-$sql = "SELECT id_Producto, Nombre, Descripcion, Imagen, Precio 
+$sql = "SELECT id_Producto, Nombre, Descripcion, Tipo, Imagen, Precio 
         FROM producto 
         WHERE Disponible = 1 AND id_Producto = $idProducto";
 $resultado = $conexion->query($sql);
@@ -45,6 +45,7 @@ echo json_encode([
     "imagen" => $producto["Imagen"],
     "descripcion" => $producto["Descripcion"],
     "precio_unitario" => (float)$producto["Precio"],
-    "ingredientes" => $ingredientes
+    "ingredientes" => $ingredientes,
+    "tipo" => $producto["Tipo"]
 ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 ?>
